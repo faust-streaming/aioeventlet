@@ -254,8 +254,12 @@ class LinkFutureTests(tests.TestCase):
         self.loop.call_soon(func, fut)
         self.loop.call_soon(fut.set_result, 'unused')
         self.loop.run_forever()
-        self.assertEqual(result[0],
-                         'loop argument must agree with Future')
+        if sys.version_info >= (3, 8):
+            self.assertEqual(result[0],
+                             'The future belongs to a different loop than the one specified as the loop argument')
+        else:
+            self.assertEqual(result[0],
+                             'loop argument must agree with Future')
 
 
 class WrapGreenthreadTests(tests.TestCase):
